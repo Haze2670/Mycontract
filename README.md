@@ -48,3 +48,6 @@ Once the contract is deployed, you can interact with it by calling the sayHello 
 
 *Authors*
 Raymark G. Tomas
+
+License
+This project is licensed under the MIT License - see the LICENSE.md file for details
