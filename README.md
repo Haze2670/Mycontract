@@ -12,29 +12,44 @@ To run this program, you can use Remix, an online Solidity IDE. To get started, 
 Once you are on the Remix website, create a new file by clicking on the "+" icon in the left-hand sidebar. Save the file with a .sol extension (e.g., HelloWorld.sol). Copy and paste the following code into the file:
 
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.1;
+pragma solidity ^0.8.18;
 
-contract HandlingContract {
-    uint public contractBalance;
-    address public contractOwner;
+contract PCopenContract {
+    address public owner;
+    bool public PCopen;
 
     constructor() {
-        contractOwner = msg.sender;
+        owner = msg.sender;  
     }
 
     modifier onlyOwner() {
-        require(contractOwner == msg.sender, "Unauthorized");
+        require(msg.sender == owner, "Only the owner can perform this action.");
         _;
     }
 
-    function depositFunds() public payable onlyOwner {
-        contractBalance += msg.value;
+    function openPC() public onlyOwner {
+        require(!PCopen, "PC is already on.");
+        PCopen = true;
     }
 
-    function withdrawFunds(uint amount) public onlyOwner {
-        require(contractBalance >= amount, "Insufficient balance");
-        contractBalance -= amount;
-        payable(contractOwner).transfer(amount);
+    function closePC() public onlyOwner {
+        require(PCopen, "PC is already off.");
+        PCopen = false;
+    }
+
+    function checkPCStatus() public view returns (bool) {
+        return PCopen;
+    }
+
+    function assertPC() public view onlyOwner {
+        assert(!PCopen);
+    }
+
+    function revertPC() public onlyOwner {
+        if (PCopen) {
+            PCopen = false;
+            revert("PC was on. Automatically powered off.");
+        }
     }
 }
 
